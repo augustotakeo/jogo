@@ -2,17 +2,36 @@
 
 <script>
 
+    function clearScreen(){
+        brush.clearRect(0, 0, 600, 600);
+    }
+
     function drawRectangle(){
         brush.fillRect(x, y, widthRect, heightRect);
     }
 
     function drawCircle(){
         brush.beginPath();
-        brush.arc(x1, y1, 10, 0, 2*Math.PI);
+        brush.arc(x1, y1, raio, 0, 2*Math.PI);
         brush.fill();
     }
 
-    function draw(){
+    function contactBollBar(){
+        if( x1 == x + widthRect && addX1 == -1 ){
+            if( y <= y1 && y1 <= y + y+heightRect ){
+                addX1 = 1;
+            }
+        }
+
+        if( x1 == x && addX1 == 1){
+            if( y <= y1 && y1 <= y + y+heightRect ){
+                addX1 = -1;
+            }
+        }
+    }
+
+    function moveBoll(){
+        
         if( x1 == 600 ){
             addX1 = -1;
         }else if( x1 == 0 ){
@@ -25,15 +44,20 @@
             addY1 = 1;
         }
 
+        contactBollBar();
+
         x1 += addX1;
 
         y1 += addY1;
-
-        drawCircle();
     }
 
-    function clearScreen(){
-        brush.clearRect(0, 0, 600, 600);
+    function draw(){
+
+        drawRectangle();
+
+        moveBoll();
+
+        drawCircle();
     }
 
     function readFromScreen(event){
@@ -50,7 +74,6 @@
 
     function updateScreen(){
         clearScreen();
-        drawRectangle();
         draw();
     }
 
@@ -59,19 +82,25 @@
     var cima = 38;
     var baixo = 40;
 
-    var x = 50;
+    // coordenadas da ponta superior esquerda da barra
+    var x = 200;
     var y = 0;
 
+    // tamanho da barra
+    var widthRect = 10;
+    var heightRect = 100;
+
+    // coordenadas da bola
     var x1 = 250;
     var y1 = 0;
+    var raio = 10;
+
+    // variáveis reponsáveis por mudar a coordenada da bola
     var addX1 = 1;
     var addY1 = 1;
 
     var screen = document.querySelector('canvas');
     var brush = screen.getContext('2d');
-
-    var widthRect = 10;
-    var heightRect = 100;
 
     document.onkeydown = readFromScreen;
 
